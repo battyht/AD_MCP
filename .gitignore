@@ -1,0 +1,42 @@
+# 依赖目录
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# 日志文件
+logs/
+*.log
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# IDE配置
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 构建输出
+dist/
+build/
+
+# 测试覆盖率
+coverage/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/*.log
+
+# Project specific
+hourly_data.json 
