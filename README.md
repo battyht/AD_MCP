@@ -24,8 +24,8 @@ MCP是一个集成巨量API并对外提供服务的平台。该项目旨在简�
    - 已实现接口：
      - `GET /api/oceanengine/ad-accounts/{account_id}` - 获取广告账户详情
      - `GET /api/oceanengine/ad-accounts` - 获取广告账户列表
-     - `GET /api/oceanengine/ad-accounts/{account_id}/performance` - 获取广告性能数据(引流电商专用)
-     - `GET /api/oceanengine/ad-accounts/{account_id}/hourly-report` - 获取小时报表
+     - `GET /api/oceanengine/ad-accounts/{account_id}/performance` - 获取广告关键指标(展示、点击、转化、消耗等)
+     - `GET /api/oceanengine/ad-accounts/{account_id}/hourly-report` - 获取广告主按小时统计的报表数据
      - `POST /api/oceanengine/ad-accounts/{account_id}/custom-report` - 获取自定义报表
      - `GET /api/oceanengine/ad-accounts/{account_id}/report/advertiser` - 获取广告主报表
      - `GET /api/oceanengine/ad-accounts/{account_id}/projects` - 获取项目列表
@@ -118,8 +118,8 @@ API文档请参考 [docs/api.md](docs/api.md)
 
 1. 获取广告账户基本信息：包括账户ID、名称、状态、余额等
 2. 批量获取账户列表：用于管理多个广告账户
-3. 获取广告性能数据：包括展示量、点击量、转化量、点击率、转化率等关键指标，帮助引流电商评估广告效果
-4. 获取小时级别报表：按小时查看广告表现，及时调整策略
+3. 获取广告关键指标：包括展示量、点击量、转化量、点击率、转化率等，帮助引流电商评估广告效果
+4. 获取广告主小时报表：按小时查看广告表现，及时调整策略
 5. 自定义报表：根据需求定制报表，支持多维度分析
 
 ## 路线图
@@ -130,8 +130,8 @@ API文档请参考 [docs/api.md](docs/api.md)
   - [x] 巨量引擎广告账户服务API集成
     - [x] 获取账户信息接口
     - [x] 获取账户列表接口
-    - [x] 获取广告性能数据接口
-    - [x] 获取小时报表接口
+    - [x] 获取广告关键指标接口
+    - [x] 获取广告主小时报表接口
     - [x] 获取自定义报表接口
     - [x] 获取广告主报表接口
     - [x] 获取项目列表接口
