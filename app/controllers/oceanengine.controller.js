@@ -19,7 +19,9 @@ exports.getAccountInfo = async (req, res) => {
       });
     }
     
-    const result = await oceanengineService.getAccountInfo(account_id, accessToken);
+    logger.info(`GET account info for ${account_id}`);
+    
+    const result = await oceanengineService.getAccountInfo(String(account_id), accessToken);
     res.json(result);
   } catch (error) {
     logger.error(`获取账户信息错误: ${error.message}`);
@@ -46,11 +48,17 @@ exports.getAccountList = async (req, res) => {
       });
     }
     
-    const options = {
-      page: req.query.page || 1,
-      page_size: req.query.page_size || 10,
-      ...req.query
-    };
+    const options = { ...req.query };
+    
+    // 确保分页参数为整数
+    if (options.page) options.page = parseInt(options.page);
+    if (options.page_size) options.page_size = parseInt(options.page_size);
+    
+    // 确保ID是字符串
+    if (options.advertiser_id) options.advertiser_id = String(options.advertiser_id);
+    
+    logger.info(`GET account list with options: ${JSON.stringify(options)}`);
+    
     const result = await oceanengineService.getAccountList(options, accessToken);
     res.json(result);
   } catch (error) {
@@ -81,7 +89,30 @@ exports.getAdPerformance = async (req, res) => {
     }
     
     const options = { ...req.query };
-    const result = await oceanengineService.getAdPerformance(account_id, options, accessToken);
+    
+    // 处理过滤条件
+    if (options.filtering && typeof options.filtering === 'string') {
+      try {
+        options.filtering = JSON.parse(options.filtering);
+        
+        // 确保ID是字符串
+        if (options.filtering.project_id) {
+          options.filtering.project_id = String(options.filtering.project_id);
+        }
+        if (options.filtering.promotion_id) {
+          options.filtering.promotion_id = String(options.filtering.promotion_id);
+        }
+      } catch (error) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'filtering参数格式错误，应为JSON对象'
+        });
+      }
+    }
+    
+    logger.info(`GET ad performance for ${account_id} with options: ${JSON.stringify(options)}`);
+    
+    const result = await oceanengineService.getAdPerformance(String(account_id), options, accessToken);
     res.json(result);
   } catch (error) {
     logger.error(`获取广告性能数据错误: ${error.message}`);
@@ -111,7 +142,30 @@ exports.getHourlyReport = async (req, res) => {
     }
     
     const options = { ...req.query };
-    const result = await oceanengineService.getHourlyReport(account_id, options, accessToken);
+    
+    // 处理过滤条件
+    if (options.filtering && typeof options.filtering === 'string') {
+      try {
+        options.filtering = JSON.parse(options.filtering);
+        
+        // 确保ID是字符串
+        if (options.filtering.project_id) {
+          options.filtering.project_id = String(options.filtering.project_id);
+        }
+        if (options.filtering.promotion_id) {
+          options.filtering.promotion_id = String(options.filtering.promotion_id);
+        }
+      } catch (error) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'filtering参数格式错误，应为JSON对象'
+        });
+      }
+    }
+    
+    logger.info(`GET hourly report for ${account_id} with options: ${JSON.stringify(options)}`);
+    
+    const result = await oceanengineService.getHourlyReport(String(account_id), options, accessToken);
     res.json(result);
   } catch (error) {
     logger.error(`获取小时报表错误: ${error.message}`);
@@ -141,7 +195,7 @@ exports.getCustomReport = async (req, res) => {
     }
     
     const reportData = {
-      advertiser_id: account_id,
+      advertiser_id: String(account_id),
       ...req.body
     };
     
@@ -240,6 +294,11 @@ exports.getProjectList = async (req, res) => {
     if (options.filtering && typeof options.filtering === 'string') {
       try {
         options.filtering = JSON.parse(options.filtering);
+        
+        // 确保过滤条件中的ID是字符串
+        if (options.filtering.project_id) {
+          options.filtering.project_id = String(options.filtering.project_id);
+        }
       } catch (error) {
         return res.status(400).json({
           status: 'error',
@@ -248,7 +307,12 @@ exports.getProjectList = async (req, res) => {
       }
     }
     
-    const result = await oceanengineService.getProjectList(account_id, options, accessToken);
+    // 确保ID字段是字符串
+    if (options.project_id) {
+      options.project_id = String(options.project_id);
+    }
+    
+    const result = await oceanengineService.getProjectList(String(account_id), options, accessToken);
     res.json(result);
   } catch (error) {
     logger.error(`获取项目列表错误: ${error.message}`);
@@ -283,6 +347,14 @@ exports.getAdList = async (req, res) => {
     if (options.filtering && typeof options.filtering === 'string') {
       try {
         options.filtering = JSON.parse(options.filtering);
+        
+        // 确保过滤条件中的ID是字符串
+        if (options.filtering.promotion_id) {
+          options.filtering.promotion_id = String(options.filtering.promotion_id);
+        }
+        if (options.filtering.project_id) {
+          options.filtering.project_id = String(options.filtering.project_id);
+        }
       } catch (error) {
         return res.status(400).json({
           status: 'error',
@@ -294,10 +366,18 @@ exports.getAdList = async (req, res) => {
     // 处理分页参数
     if (options.page) options.page = parseInt(options.page);
     if (options.page_size) options.page_size = parseInt(options.page_size);
-    if (options.cursor) options.cursor = parseInt(options.cursor);
+    if (options.cursor) options.cursor = String(options.cursor);
     if (options.count) options.count = parseInt(options.count);
     
-    const result = await oceanengineService.getAdList(account_id, options, accessToken);
+    // 确保ID字段是字符串
+    if (options.promotion_id) {
+      options.promotion_id = String(options.promotion_id);
+    }
+    if (options.project_id) {
+      options.project_id = String(options.project_id);
+    }
+    
+    const result = await oceanengineService.getAdList(String(account_id), options, accessToken);
     res.json(result);
   } catch (error) {
     logger.error(`获取广告列表错误: ${error.message}`);

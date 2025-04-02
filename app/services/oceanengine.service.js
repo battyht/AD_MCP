@@ -26,7 +26,22 @@ exports.getAccountInfo = async (accountId, accessToken) => {
       },
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 如果有大整数ID，确保它们被作为字符串处理
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(item => {
+              if (item.id) item.id = String(item.id);
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -62,7 +77,24 @@ exports.getAccountList = async (options, accessToken) => {
       },
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 转换账户ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(account => {
+              if (account.advertiser_id) account.advertiser_id = String(account.advertiser_id);
+              if (account.account_id) account.account_id = String(account.account_id);
+              if (account.id) account.id = String(account.id);
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -133,7 +165,24 @@ exports.getAdPerformance = async (accountId, options = {}, accessToken) => {
       },
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 转换报表数据中的ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(item => {
+              if (item.ad_id) item.ad_id = String(item.ad_id);
+              if (item.campaign_id) item.campaign_id = String(item.campaign_id);
+              if (item.advertiser_id) item.advertiser_id = String(item.advertiser_id);
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -177,7 +226,31 @@ exports.getHourlyReport = async (accountId, options = {}, accessToken) => {
       params,
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 转换报表数据中的ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(item => {
+              if (item.advertiser_id) item.advertiser_id = String(item.advertiser_id);
+              if (item.campaign_id) item.campaign_id = String(item.campaign_id);
+              if (item.ad_id) item.ad_id = String(item.ad_id);
+              
+              // 处理其他可能的ID字段
+              Object.keys(item).forEach(key => {
+                if (key.includes('_id') && typeof item[key] === 'number' && String(item[key]).length > 15) {
+                  item[key] = String(item[key]);
+                }
+              });
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -237,7 +310,33 @@ exports.getCustomReport = async (reportData, accessToken) => {
       params: requestData,
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 转换自定义报表中的ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(item => {
+              // 处理常见的ID字段
+              if (item.cdp_promotion_id) item.cdp_promotion_id = String(item.cdp_promotion_id);
+              if (item.promotion_id) item.promotion_id = String(item.promotion_id);
+              if (item.project_id) item.project_id = String(item.project_id);
+              if (item.advertiser_id) item.advertiser_id = String(item.advertiser_id);
+              
+              // 遍历所有字段，将可能的ID字段都转为字符串
+              Object.keys(item).forEach(key => {
+                if (key.includes('_id') && typeof item[key] === 'number' && String(item[key]).length > 15) {
+                  item[key] = String(item[key]);
+                }
+              });
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -274,7 +373,24 @@ exports.getProjectList = async (accountId, options = {}, accessToken) => {
       params,
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 如果有项目数据，转换项目ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(project => {
+              if (project.project_id) project.project_id = String(project.project_id);
+              // 其他可能的大整数ID
+              if (project.advertiser_id) project.advertiser_id = String(project.advertiser_id);
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
@@ -311,7 +427,26 @@ exports.getAdList = async (accountId, options = {}, accessToken) => {
       params,
       headers: {
         'Access-Token': accessToken
-      }
+      },
+      transformResponse: [
+        // 添加自定义转换响应函数，确保ID被作为字符串处理
+        (data) => {
+          const parsedData = JSON.parse(data);
+          
+          // 如果有广告数据，转换广告ID为字符串
+          if (parsedData.data && parsedData.data.list) {
+            parsedData.data.list.forEach(ad => {
+              // 转换所有可能的ID字段为字符串
+              if (ad.promotion_id) ad.promotion_id = String(ad.promotion_id);
+              if (ad.project_id) ad.project_id = String(ad.project_id);
+              if (ad.advertiser_id) ad.advertiser_id = String(ad.advertiser_id);
+              // 其他可能的大整数ID
+            });
+          }
+          
+          return parsedData;
+        }
+      ]
     });
     
     return response.data;
